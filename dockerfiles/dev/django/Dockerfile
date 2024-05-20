@@ -2,6 +2,7 @@ FROM python:3.10-slim-buster
 
 LABEL maintainer='1yzamiryz1@gmail.com'
 
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /usr/src/app
