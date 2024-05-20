@@ -37,6 +37,8 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'website',
+	'accounts'
 	]
 
 MIDDLEWARE = [
@@ -121,7 +123,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-STATICFILES_DIR = [
+STATICFILES_DIRS = [
 	BASE_DIR / 'static'
 	]
 
@@ -138,15 +140,19 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int, default=25)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 
-
 SHOW_DEBUGGER_TOOLBAR = config("SHOW_DEBUGGER_TOOLBAR", cast=bool, default=True)
 if SHOW_DEBUGGER_TOOLBAR:
-    INSTALLED_APPS += [
-        "debug_toolbar",
-    ]
-    MIDDLEWARE += [
-        "debug_toolbar.middleware.DebugToolbarMiddleware",
-    ]
-    import socket  # only if you haven't already imported this
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
+	INSTALLED_APPS += [
+		"debug_toolbar",
+		]
+	MIDDLEWARE += [
+		"debug_toolbar.middleware.DebugToolbarMiddleware",
+		]
+	import socket  # only if you haven't already imported this
+
+	hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+	INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
+
+AUTH_USER_MODEL = 'accounts.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
