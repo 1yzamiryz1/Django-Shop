@@ -10,3 +10,10 @@ psycopg[binary]
 # third party modules
 python-decouple
 django-debug-toolbar
+
+
+# background proccess and cache
+celery
+django-redis
+django-celery-beat
+redis
