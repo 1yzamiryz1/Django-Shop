@@ -1,14 +1,6 @@
 version: "3.9"
 
 services:
-  redis:
-    container_name: redis
-    image: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    command: redis-server --save 60 1 --loglevel warning
-
   db:
     container_name: db
     image: postgres:15-alpine
@@ -27,12 +19,12 @@ services:
     build:
       context: .
       dockerfile: ./dockerfiles/dev/django/Dockerfile
-    volumes:
+    volumes: 
       - ./core:/usr/src/app
     working_dir: /usr/src/app
     command: python manage.py runserver 0.0.0.0:8000
     ports:
-      - "8000:8000"
+      - 8000:8000
     environment:
       - DEBUG=True
     env_file:
@@ -40,7 +32,7 @@ services:
     restart: always
     depends_on:
       - db
-
+      
   smtp4dev:
     image: rnwood/smtp4dev:v3
     restart: always
@@ -49,20 +41,9 @@ services:
       - '25:25'
       - '143:143'
     volumes:
-      - smtp4dev-data:/smtp4dev
+        - smtp4dev-data:/smtp4dev
     environment:
       - ServerOptions__HostName=smtp4dev
-
-  worker:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/dev/django/Dockerfile
-    command: celery -A core worker --loglevel=info
-    volumes:
-      - ./core:/usr/src/app
-    depends_on:
-      - redis
-      - backend
 
 volumes:
   smtp4dev-data:

@@ -1,11 +1,11 @@
 # main modules
 django >4.2,<4.3
-
+pillow
 
 
 # database modules
 psycopg[binary]
-
+faker
 
 # third party modules
 python-decouple
