@@ -2,6 +2,7 @@
 {% load static %}
 {% load shop_tags %}
 
+
 {% block content %}
 
 <!-- Hero -->
@@ -234,7 +235,7 @@
             <!-- End Accordion -->
 
             <div class="d-grid mb-4">
-                <button type="button" class="btn btn-primary btntransition">افزودن به سبد خرید</button>
+                <button type="button" class="btn btn-primary btntransition" onclick="addToCart('{{ object.id }}')">افزودن به سبد خرید</button>
             </div>
 
             <!-- Media -->
@@ -273,7 +274,8 @@
     <!-- End Row -->
 </div>
 <!-- End Content -->
-{% show_similar_products product=object %}
+
+{% show_similar_products object %}
 
 <!-- Review Section -->
 <div id="reviewSection" class="container content-space-b-2 content-space-b-lg-3">
@@ -513,7 +515,7 @@
                 </div>
                 <!-- End Heading -->
 
-                <form method="post" action="#">
+                <form method="post" action="{% url 'website:newsletter' %}">
                     {% csrf_token %}
                     <!-- Input Card -->
                     <div class="input-card input-card-pill input-card-sm border mb-3">
