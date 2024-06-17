@@ -38,3 +38,7 @@ class ShopProductGridView(ListView):
 class ShopProductDetailView(DetailView):
 	template_name = 'shop/product-detail.html'
 	queryset = ProductModel.objects.filter(status=ProductStatusType.publish.value)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		return context
