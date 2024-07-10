@@ -125,7 +125,7 @@
                 <!-- End Header -->
 
                 <!-- Body -->
-                <form action="#" method="post"
+                <form action="{% url 'dashboard:admin:product-add-image' pk=object.pk %}" method="post"
                       enctype="multipart/form-data">
 
                     {% csrf_token %}
@@ -167,14 +167,6 @@
     </div>
 {% endblock %}
 
-{% block extra_js_no_compress %}
-    <script src="{% static 'vendor/ckeditor/ckeditor.js' %}"></script>
-    <script>
-        // Replace 'editor' with the id of your textarea
-        CKEDITOR.replace('ckeditor');
-    </script>
-{% endblock %}
-
 {% block extra_js %}
     <script>
 
@@ -196,5 +188,13 @@
             slugStr = titleStr;
             return slugStr;
         }
+    </script>
+{% endblock %}
+
+{% block extra_js_no_compress %}
+    <script src="{% static 'vendor/ckeditor/ckeditor.js' %}"></script>
+    <script>
+        // Replace 'editor' with the id of your textarea
+        CKEDITOR.replace('ckeditor');
     </script>
 {% endblock %}
