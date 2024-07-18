@@ -10,6 +10,7 @@ faker
 # third party modules
 python-decouple
 django-debug-toolbar
+requests
 
 
 # background proccess and cache
