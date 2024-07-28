@@ -1,6 +1,7 @@
-from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
+
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 
 
 class OrderStatusType(models.IntegerChoices):
@@ -45,8 +46,9 @@ class OrderModel(models.Model):
 	city = models.CharField(max_length=50)
 	zip_code = models.CharField(max_length=50)
 
-	total_price = models.DecimalField(default=0, max_digits=10, decimal_places=0)
+	payment = models.ForeignKey('payment.PaymentModel', on_delete=models.SET_NULL, null=True, blank=True)
 
+	total_price = models.DecimalField(default=0, max_digits=10, decimal_places=0)
 	coupon = models.ForeignKey(CouponModel, on_delete=models.PROTECT, null=True, blank=True)
 	status = models.IntegerField(choices=OrderStatusType.choices, default=OrderStatusType.pending.value)
 	created_date = models.DateTimeField(auto_now_add=True)

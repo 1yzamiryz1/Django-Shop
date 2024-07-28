@@ -1,23 +1,25 @@
-from cart.cart import CartSession
-from cart.models import CartModel
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.utils import timezone
+from django.http import HttpResponse
 from django.views.generic import (
 	TemplateView,
 	FormView,
 	View
 	)
-from order.forms import CheckOutForm
-from order.models import CouponModel
-from order.models import OrderModel, OrderItemModel
-from order.models import UserAddressModel
+from django.contrib.auth.mixins import LoginRequiredMixin
 from order.permissions import HasCustomerAccessPermission
-
-
+from order.models import UserAddressModel
+from order.forms import CheckOutForm
+from cart.models import CartModel, CartItemModel
+from order.models import OrderModel, OrderItemModel
+from django.urls import reverse_lazy
+from cart.cart import CartSession
+from decimal import Decimal
+from order.models import CouponModel
+from django.http import JsonResponse
+from django.utils import timezone
+from django.shortcuts import redirect
 # Create your views here.
+from payment.zarinpal_client import ZarinPalSandbox
+from payment.models import PaymentModel
 
 
 class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormView):
@@ -47,6 +49,17 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 		order.save()
 		return redirect(self.create_payment_url(order))
 
+	def create_payment_url(self, order):
+		zarinpal = ZarinPalSandbox()
+		response = zarinpal.payment_request(order.get_price())
+		payment_obj = PaymentModel.objects.create(
+				authority_id=response.get("Authority"),
+				amount=order.get_price(),
+				)
+		order.payment = payment_obj
+		order.save()
+		return zarinpal.generate_payment_url(response.get("Authority"))
+
 	def create_order(self, address):
 		return OrderModel.objects.create(
 				user=self.request.user,
@@ -71,10 +84,9 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 
 	def apply_coupon(self, coupon, order, user, total_price):
 		if coupon:
-			discount_amount = round(
-					(total_price * Decimal(coupon.discount_percent / 100))
-					)
-			total_price -= discount_amount
+			# discount_amount = round(
+			#     (total_price * Decimal(coupon.discount_percent / 100)))
+			# total_price -= discount_amount
 
 			order.coupon = coupon
 			coupon.used_by.add(user)

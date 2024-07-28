@@ -37,12 +37,14 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'django.contrib.sites.models.Site',
 	'website',
 	'accounts',
 	'shop',
 	'cart',
 	'dashboard',
 	'order',
+	'payment',
 	]
 
 MIDDLEWARE = [
@@ -165,3 +167,7 @@ LOGOUT_REDIRECT_URL = '/'
 CELERY_BROKER_URL = "redis://redis:6379/1"
 
 PASSWORD_RESET_TIMEOUT_DAYS = 2
+
+# payment gateway settings
+MERCHANT_ID = config("MERCHANT_ID",default="4ced0a1e-4ad8-4309-9668-3ea3ae8e8897")
+SANDBOX_MODE = config("SANDBOX_MODE", cast=bool, default=True)
