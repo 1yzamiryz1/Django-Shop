@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -42,3 +43,8 @@ if settings.DEBUG:
 
 if settings.SHOW_DEBUGGER_TOOLBAR:
 	urlpatterns += [path('__debug__/', include('debug_toolbar.urls')), ]
+
+handler400 = "core.error_views.error_400"  # bad_request
+handler403 = "core.error_views.error_403"  # permission_denied
+handler404 = "core.error_views.error_404"  # page_not_found
+handler500 = "core.error_views.error_500"  # server_error
