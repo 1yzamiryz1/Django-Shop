@@ -39,8 +39,13 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 		coupon = cleaned_data['coupon']
 
 		cart = CartModel.objects.get(user=user)
-		order = self.create_order(address)
 
+		for item in cart.cart_items.all():
+			if item.product.stock < item.quantity:
+				form.add_error(None, f"Not enough stock for product {item.product.title}")
+				return self.form_invalid(form)
+
+		order = self.create_order(address)
 		self.create_order_items(order, cart)
 		self.clear_cart(cart)
 
@@ -71,12 +76,17 @@ class OrderCheckOutView(LoginRequiredMixin, HasCustomerAccessPermission, FormVie
 
 	def create_order_items(self, order, cart):
 		for item in cart.cart_items.all():
-			OrderItemModel.objects.create(
-					order=order,
-					product=item.product,
-					quantity=item.quantity,
-					price=item.product.get_price(),
-					)
+			if item.product.stock >= item.quantity:
+				OrderItemModel.objects.create(
+						order=order,
+						product=item.product,
+						quantity=item.quantity,
+						price=item.product.get_price(),
+						)
+				item.product.stock -= item.quantity
+				item.product.save()
+			else:
+				raise ValueError(f"Not enough stock for product {item.product.name}")
 
 	def clear_cart(self, cart):
 		cart.cart_items.all().delete()
