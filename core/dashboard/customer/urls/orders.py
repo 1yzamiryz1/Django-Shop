@@ -6,3 +6,4 @@ urlpatterns = [
     path("order/<int:pk>/detail/",views.CustomerOrderDetailView.as_view(),name="order-detail"),
     path("order/<int:pk>/invoice/",views.CustomerOrderInvoiceView.as_view(),name="order-invoice"),
 ]
+

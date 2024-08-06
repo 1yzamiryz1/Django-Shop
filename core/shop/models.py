@@ -36,7 +36,7 @@ class ProductModel(models.Model):
 	status = models.IntegerField(choices=ProductStatusType.choices, default=ProductStatusType.draft.value)
 	price = models.DecimalField(default=0, max_digits=10, decimal_places=0)
 	discount_percent = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-
+	avg_rate = models.FloatField(default=0.0)
 	created_date = models.DateTimeField(auto_now_add=True)
 	updated_date = models.DateTimeField(auto_now=True)
 
@@ -67,3 +67,11 @@ class ProductImageModel(models.Model):
 
 	class Meta:
 		ordering = ["-created_date"]
+
+
+class WishlistProductModel(models.Model):
+	user = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
+	product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.product.title

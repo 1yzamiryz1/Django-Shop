@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 	'order',
 	'payment',
 	'azbankgateways',
+	'review',
 
 	]
 SITE_ID = 1
