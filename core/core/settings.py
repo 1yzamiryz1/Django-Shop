@@ -26,7 +26,7 @@ SECRET_KEY = config("SECRET_KEY", default='django-insecure-v!!p07q542ol1a=jzhp^c
 DEBUG = config("DEBUG", cast=bool, default=True)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=lambda v: [item.strip() for item in v.split(',')], default="*")
-
+COMINGSOON = config("COMINGSOON", cast=bool, default=False)
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
 	'review',
 
 	]
-SITE_ID = 1
+SITE_ID = config("SITE_ID", cast=int, default=1)
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
@@ -87,10 +87,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': config("PGDB_NAME", default='postgres'),
+		"ENGINE": config(
+				"PGDB_ENGINE", default="django.db.backends.postgresql"
+				),
+		"NAME": config("DB_NAME", default="postgres"),
 		'USER': config("PGDB_USER", default='postgres'),
-		'PASSWORD': config("PGDB_PASSWORD", default='postgres'),
+        "PASSWORD": config("PGDB_PASS", default="postgres"),
 		'HOST': config("PGDB_HOST", default='db'),
 		'PORT': config("PGDB_PORT", cast=int, default=5432),
 		}
@@ -143,13 +145,30 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = config("EMAIL_HOST", default="smtp4dev")
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
-EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=False)
-EMAIL_PORT = config("EMAIL_PORT", cast=int, default=25)
-EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+# Email Configurations for production and development
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_USE_TLS = False
+    EMAIL_HOST = "smtp4dev"
+    EMAIL_HOST_USER = ""
+    EMAIL_HOST_PASSWORD = ""
+    EMAIL_PORT = 25
+else:
+    EMAIL_BACKEND = config(
+        "EMAIL_BACKEND",
+        default="django.core.mail.backends.smtp.EmailBackend",
+    )
+    EMAIL_HOST = config("EMAIL_HOST", default="mail.example.come")
+    EMAIL_PORT = int(config("EMAIL_PORT", default=465))
+    EMAIL_HOST_USER = config(
+        "EMAIL_HOST_USER", default="infor@example.com"
+    )
+    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="password")
+    EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=True)
+    EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
+    DEFAULT_FROM_EMAIL = config(
+        "DEFAULT_FROM_EMAIL", default="infor@example.com"
+    )
 
 # django debug toolbar for docker usage
 SHOW_DEBUGGER_TOOLBAR = config("SHOW_DEBUGGER_TOOLBAR", cast=bool, default=True)
@@ -224,3 +243,30 @@ AZ_IRANIAN_BANK_GATEWAYS = {
 	"IS_SAFE_GET_GATEWAY_PAYMENT": True,  # اختیاری، بهتر است True بزارید.
 	"CUSTOM_APP": "payment",  # اختیاری
 	}
+
+# security configs for production
+if config("USE_SSL_CONFIG", cast=bool, default=False):
+	# Https settings
+	SESSION_COOKIE_SECURE = True
+	CSRF_COOKIE_SECURE = True
+	SECURE_SSL_REDIRECT = True
+
+	# HSTS settings
+	SECURE_HSTS_SECONDS = 31536000  # 1 year
+	SECURE_HSTS_PRELOAD = True
+	SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+	# more security settings
+	SECURE_CONTENT_TYPE_NOSNIFF = True
+	SECURE_BROWSER_XSS_FILTER = True
+	X_FRAME_OPTIONS = "SAMEORIGIN"
+	SECURE_REFERRER_POLICY = "strict-origin"
+	USE_X_FORWARDED_HOST = True
+	SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+if config("DISABLE_BROWSEABLE_API", cast=bool, default=False):
+	REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (
+		"rest_framework.renderers.JSONRenderer",
+		)
+
+SHOW_SWAGGER = config("SHOW_SWAGGER", cast=bool, default=True)

@@ -1,13 +1,15 @@
 FROM python:3.10-slim-buster
 
-LABEL maintainer="bigdeli.ali3@gmail.com"
+LABEL maintainer="1yzamiryz1@gmail.com"
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY ./requirements.txt .
+COPY requirements.txt /app/
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+RUN pip install debugpy
 
-COPY ./core .
+COPY ./core /app
