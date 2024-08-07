@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 
+{% block title %} login {% endblock %}
+
 {% block content %}
 <div class="container content-space-3 content-space-t-lg-4 content-space-b-lg-3">
     <div class="flex-grow-1 mx-auto" style="max-width: 28rem;">
@@ -49,7 +51,7 @@
             </div>
 
             <div class="text-center">
-                <p>حساب کاربری ندارید؟ <a class="link" href="./page-signup-simple.html">اینجا ثبت نام کنید</a></p>
+                <p>حساب کاربری ندارید؟ <a class="link" href="{% url 'accounts:signup' %}">اینجا ثبت نام کنید</a></p>
             </div>
         </form>
 

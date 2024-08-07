@@ -1,7 +1,7 @@
 # main modules
 django >4.2,<4.3
 pillow
-
+djangorestframework
 
 # database modules
 psycopg[binary]
@@ -21,3 +21,6 @@ redis
 
 # other payment gateways
 az-iranian-bank-gateways
+
+# deployment module
+gunicorn

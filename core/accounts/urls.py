@@ -9,7 +9,7 @@ app_name = 'accounts'
 urlpatterns = [
 	path('login/', views.LoginView.as_view(), name='login'),
 	path('logout/', views.LogoutView.as_view(), name='logout'),
-	# path('register/', views.LogoutView.as_view(), name='register'),
+	path("signup/", views.SignupView.as_view(), name="signup"),
 	path(
 			"password_reset/",
 			auth_views.PasswordResetView.as_view(success_url=reverse_lazy("accounts:password_reset_done")),

@@ -37,7 +37,6 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django.contrib.sites',
-
 	'website',
 	'dashboard',
 	'accounts',
@@ -47,8 +46,9 @@ INSTALLED_APPS = [
 	'payment',
 	'azbankgateways',
 	'review',
-
+	"rest_framework",
 	]
+
 SITE_ID = config("SITE_ID", cast=int, default=1)
 
 MIDDLEWARE = [
@@ -92,7 +92,7 @@ DATABASES = {
 				),
 		"NAME": config("DB_NAME", default="postgres"),
 		'USER': config("PGDB_USER", default='postgres'),
-        "PASSWORD": config("PGDB_PASS", default="postgres"),
+		"PASSWORD": config("PGDB_PASS", default="postgres"),
 		'HOST': config("PGDB_HOST", default='db'),
 		'PORT': config("PGDB_PORT", cast=int, default=5432),
 		}
@@ -130,14 +130,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_URL = 'media/'
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
 
 STATICFILES_DIRS = [
-	BASE_DIR / 'static'
+	BASE_DIR / "staticfiles",
 	]
 
 # Default primary key field type
@@ -147,28 +147,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configurations for production and development
 if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_USE_TLS = False
-    EMAIL_HOST = "smtp4dev"
-    EMAIL_HOST_USER = ""
-    EMAIL_HOST_PASSWORD = ""
-    EMAIL_PORT = 25
+	EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+	EMAIL_USE_TLS = False
+	EMAIL_HOST = "smtp4dev"
+	EMAIL_HOST_USER = ""
+	EMAIL_HOST_PASSWORD = ""
+	EMAIL_PORT = 25
 else:
-    EMAIL_BACKEND = config(
-        "EMAIL_BACKEND",
-        default="django.core.mail.backends.smtp.EmailBackend",
-    )
-    EMAIL_HOST = config("EMAIL_HOST", default="mail.example.come")
-    EMAIL_PORT = int(config("EMAIL_PORT", default=465))
-    EMAIL_HOST_USER = config(
-        "EMAIL_HOST_USER", default="infor@example.com"
-    )
-    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="password")
-    EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=True)
-    EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
-    DEFAULT_FROM_EMAIL = config(
-        "DEFAULT_FROM_EMAIL", default="infor@example.com"
-    )
+	EMAIL_BACKEND = config(
+			"EMAIL_BACKEND",
+			default="django.core.mail.backends.smtp.EmailBackend",
+			)
+	EMAIL_HOST = config("EMAIL_HOST", default="mail.example.come")
+	EMAIL_PORT = int(config("EMAIL_PORT", default=465))
+	EMAIL_HOST_USER = config(
+			"EMAIL_HOST_USER", default="infor@example.com"
+			)
+	EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="password")
+	EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=True)
+	EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
+	DEFAULT_FROM_EMAIL = config(
+			"DEFAULT_FROM_EMAIL", default="infor@example.com"
+			)
 
 # django debug toolbar for docker usage
 SHOW_DEBUGGER_TOOLBAR = config("SHOW_DEBUGGER_TOOLBAR", cast=bool, default=True)
@@ -263,6 +263,20 @@ if config("USE_SSL_CONFIG", cast=bool, default=False):
 	SECURE_REFERRER_POLICY = "strict-origin"
 	USE_X_FORWARDED_HOST = True
 	SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# restframework configurations
+REST_FRAMEWORK = {
+	"DEFAULT_PERMISSION_CLASSES": [
+		"rest_framework.permissions.AllowAny",
+		],
+	"DEFAULT_AUTHENTICATION_CLASSES": [
+		"rest_framework_simplejwt.authentication.JWTAuthentication",
+		"rest_framework.authentication.TokenAuthentication",
+		"rest_framework.authentication.BasicAuthentication",
+		"rest_framework.authentication.SessionAuthentication",
+		],
+	"DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+	}
 
 if config("DISABLE_BROWSEABLE_API", cast=bool, default=False):
 	REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (
